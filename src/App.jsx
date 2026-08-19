@@ -1062,4 +1062,48 @@ export default function App() {
         </div>
         <nav className="flex-1 space-y-0.5 px-3 py-4">
           {NAV.map((n) => (
-            <button key=
+            <button key={n.key} onClick={() => setPage(n.key)} className={`flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium ${page === n.key ? "bg-[#E4EFEA] text-[#1F6F5C]" : "text-[#5B6B6E] hover:bg-[#F7F6F3]"}`}>
+              <n.icon size={16} /> {n.label}
+            </button>
+          ))}
+        </nav>
+        <div className="border-t border-[#E4E0D6] px-4 py-3">
+          <p className="flex items-center gap-1 text-[10px] font-medium text-[#8A8578]">{role === "admin" ? <ShieldCheck size={12} /> : <Eye size={12} />} {role === "admin" ? "Admin" : "Viewer"}</p>
+          <p className="mt-1 flex items-center gap-1 text-[10px] text-[#B7AF9E]"><Clock size={11} /> {now}</p>
+        </div>
+      </div>
+
+      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E4E0D6] bg-white/95 px-4 py-3 backdrop-blur sm:hidden">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#1F6F5C] text-white"><Wallet size={14} /></div>
+          <p className="text-sm font-bold text-[#1B2A2E]" style={{ fontFamily: "'Fraunces', serif" }}>{NAV.find((n) => n.key === page)?.label}</p>
+        </div>
+        <span className="flex items-center gap-1 rounded-full bg-[#F7F6F3] px-2 py-1 text-[10px] font-medium text-[#5B6B6E]">{role === "admin" ? <ShieldCheck size={11} /> : <Eye size={11} />} {role === "admin" ? "Admin" : "Viewer"}</span>
+      </div>
+
+      <main className="px-4 py-4 sm:ml-56 sm:px-8 sm:py-6">
+        <div className="mx-auto max-w-3xl">
+          <div className="no-print mb-4 hidden items-center justify-between sm:flex">
+            <h2 className="text-xl font-semibold text-[#1B2A2E]" style={{ fontFamily: "'Fraunces', serif" }}>{NAV.find((n) => n.key === page)?.label}</h2>
+          </div>
+          {page === "dashboard" && <DashboardPage data={data} activePeriodId={activePeriodId} setActivePeriodId={setActivePeriodId} openQuickExpense={() => setShowQuickExpense(true)} role={role} />}
+          {page === "students" && <StudentsCashPage {...pageProps} />}
+          {page === "transactions" && <TransactionsPage {...pageProps} />}
+          {page === "expenses" && <ExpensesPage {...pageProps} />}
+          {page === "reports" && <ReportsPage data={data} />}
+          {page === "settings" && <SettingsPage data={data} mutate={mutate} classId={classId} role={role} toast={toast} confirm={confirm} onLogout={() => { setView("landing"); setData(null); setClassId(null); setPage("dashboard"); }} />}
+        </div>
+      </main>
+
+      <nav className="no-print fixed bottom-0 left-0 right-0 z-30 flex border-t border-[#E4E0D6] bg-white/95 backdrop-blur sm:hidden">
+        {NAV.slice(0, 5).map((n) => (
+          <button key={n.key} onClick={() => setPage(n.key)} className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${page === n.key ? "text-[#1F6F5C]" : "text-[#8A8578]"}`}><n.icon size={18} /> {n.label}</button>
+        ))}
+      </nav>
+
+      {showQuickExpense && <AddExpenseModal mutate={mutate} onClose={() => setShowQuickExpense(false)} toast={toast} />}
+      <ConfirmDialog dialog={confirmDialog} onClose={() => setConfirmDialog(null)} />
+      <Toast toast={toastMsg} />
+    </div>
+  );
+}
